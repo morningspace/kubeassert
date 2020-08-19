@@ -263,15 +263,15 @@ function assert::should-not-exist {
 
     if [[ -n $FLAG_VERBOSE ]]; then
       if [[ -n $namespace ]]; then
-        logger::warn "`name_of $resource` found in $namespace namespace."
+        logger::warn "Found `name_of $resource` in $namespace namespace."
         logger::warn "Run 'kubectl get $resource -n $namespace' to check details."
         (( $FLAG_VERBOSE > 1 )) && kubectl get $resource -n $namespace
       elif [[ -n $all_namespaces ]]; then
-        logger::warn "`name_of $resource` found in all namespaces."
+        logger::warn "Found `name_of $resource` in all namespaces."
         logger::warn "Run 'kubectl get $resource --all-namespaces' to check details."
         (( $FLAG_VERBOSE > 1 )) && kubectl get $resource --all-namespaces
       else
-        logger::warn "`name_of $resource` found."
+        logger::warn "Found `name_of $resource`."
         logger::warn "Run 'kubectl get $resource' to check details."
         (( $FLAG_VERBOSE > 1 )) && kubectl get $resource
       fi
@@ -536,7 +536,7 @@ function assert::pod-status {
       assert_fail
 
       if (( $FLAG_VERBOSE > 1 )); then
-        logger::warn "Pods are not found in $namespace namespace."
+        logger::warn "Pods not found in $namespace namespace."
       fi
     fi
   else
