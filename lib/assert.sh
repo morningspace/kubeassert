@@ -392,7 +392,7 @@ function assert::helmrelease-should-be-deletable {
   return $ASSERT_FAILED
 }
 
-# The number of running pods in specified namespace should match specified criteria
+# The number of running pods in a namespace should match specified criteria
 function assert::pod-num {
   local status="running"
   local namespace
@@ -455,7 +455,7 @@ function assert::api-service-should-be-available {
   return $ASSERT_FAILED
 }
 
-# Pods for specified lables in specified namespace should be running
+# Pods with specified lables in a namespace should be running
 function assert::pod-status {
   local status="running"
   local namespace
@@ -548,7 +548,7 @@ function assert::pod-status {
   return $ASSERT_FAILED
 }
 
-# Specified service account in specified namespace should include specified image pull secret
+# Specified service account in a namespace should include a specific image pull secret
 function assert::sa-should-include-image-pull-secret {
   local namespace
   local POSITIONAL=()
