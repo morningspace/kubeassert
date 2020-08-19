@@ -456,7 +456,7 @@ function assert::api-service-should-be-available {
 }
 
 # Pods for specified lables in specified namespace should be running
-function assert::pod {
+function assert::pod-status {
   local status="running"
   local namespace
   local labels
