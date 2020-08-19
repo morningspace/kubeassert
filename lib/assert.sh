@@ -75,20 +75,22 @@ function assert_end {
   fi
 }
 
-function assert_get_methods_info {
+function get_assert_methods_info {
   ASSERT_METHODS_INFO=()
   local methods=($(cat $0 | grep "^function assert::.* {$" | awk '{print $2}'))
   for (( i = 0; i < ${#methods[@]}; i ++ )); do
     local method_name="${methods[$i]}"
-    local method_description="$(cat $0 | grep $method_name -B1 | sed '2d')"
+    [[ $method_name == assert::all ]] && continue
+
+    local method_description="$(cat $0 | grep "^function $method_name {$" -B1 | sed '2d')"
     ASSERT_METHODS_INFO+=("${method_name}|${method_description}")
   done
 }
 
-function assert_list {
+function list_assert_methods {
   echo "Assertions:"
 
-  assert_get_methods_info
+  get_assert_methods_info
 
   for method_info in "${ASSERT_METHODS_INFO[@]}"; do
     local method_name="${method_info%|*}"
@@ -97,23 +99,10 @@ function assert_list {
   done
 }
 
-function assert_all {
-  assert_get_methods_info
-
-  for method_info in "${ASSERT_METHODS_INFO[@]}"; do
-    local method_name="${method_info%|*}"
-    local method_description="${method_info#*|}"
-    assert_step "$method_description"
-    $method_name "$@"
-  done
-}
-
 function assert {
   local POSITIONAL=()
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -l|--list)
-      POSITIONAL+=("list"); shift ;;
     -v|-v=*|--verbose=*)
       FLAG_VERBOSE=${1#*=}; shift ;;
     *)
@@ -121,8 +110,26 @@ function assert {
     esac
   done
 
-  method="assert_${POSITIONAL[0]:-all}"
-  $method "${POSITIONAL[@]:1}"
+  local method="list_assert_methods"
+  [[ -n ${POSITIONAL[0]} ]] && method="assert::${POSITIONAL[0]}"
+  
+  if type $method &>/dev/null ; then
+    $method "${POSITIONAL[@]:1}"
+  else
+    logger::warn "Unknown command: $method"
+    list_assert_methods
+  fi
+}
+
+function assert::all {
+  get_assert_methods_info
+
+  for method_info in "${ASSERT_METHODS_INFO[@]}"; do
+    local method_name="${method_info%|*}"
+    local method_description="${method_info#*|}"
+    assert_step "$method_description"
+    $method_name "$@"
+  done
 }
 
 # Specified resource should exist
@@ -628,4 +635,4 @@ function assert::secretshare-should-be-cloned {
   return $ASSERT_FAILED
 }
 
-assert_list "$@"
+assert "$@"
