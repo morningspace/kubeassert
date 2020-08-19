@@ -1,3 +1,5 @@
+. $(dirname $0)/utils.sh
+
 function filter_resource_resp {
   local resource_resp=$1
   local excludes=${@:2}
@@ -121,7 +123,8 @@ function assert {
   $method "${POSITIONAL[@]:1}"
 }
 
-function assert::should_exist {
+# Specified resource should exist
+function assert::should-exist {
   local namespace="$(kubectl config view --minify --output 'jsonpath={..namespace}')"
   local all_namespaces
   local includes
@@ -205,7 +208,8 @@ function assert::should_exist {
   return $ASSERT_FAILED
 }
 
-function assert::should_not_exist {
+# Specified resource should not exist
+function assert::should-not-exist {
   local namespace="$(kubectl config view --minify --output 'jsonpath={..namespace}')"
   local all_namespaces
   local excludes
@@ -272,7 +276,8 @@ function assert::should_not_exist {
   return $ASSERT_FAILED
 }
 
-function assert::should_not_keep_terminating {
+# Specified resource should not keep terminating
+function assert::should-not-keep-terminating {
   local namespace
   local all_namespaces
   local POSITIONAL=()
@@ -325,7 +330,8 @@ function assert::should_not_keep_terminating {
   return $ASSERT_FAILED
 }
 
-function assert::helmrelease_should_be_installed {
+# Helmrelease should be installed in specified namespace
+function assert::helmrelease-should-be-installed {
   local namespace
   local POSITIONAL=()
   while [[ $# -gt 0 ]]; do
@@ -354,7 +360,8 @@ function assert::helmrelease_should_be_installed {
   return $ASSERT_FAILED
 }
 
-function assert::helmrelease_should_be_deletable {
+# Helmrelease should be deletable in specified namespace
+function assert::helmrelease-should-be-deletable {
   local namespace
   local POSITIONAL=()
   while [[ $# -gt 0 ]]; do
@@ -383,7 +390,8 @@ function assert::helmrelease_should_be_deletable {
   return $ASSERT_FAILED
 }
 
-function assert::pod_num_should_be {
+# The number of running pods in specified namespace should match specified criteria
+function assert::pod-num {
   local status="running"
   local namespace
   local POSITIONAL=()
@@ -426,7 +434,8 @@ function assert::pod_num_should_be {
   return $ASSERT_FAILED
 }
 
-function assert::api_service_should_be_available {
+# API services should be available
+function assert::api-service-should-be-available {
   assert_start "api services should be available ... "
 
   if kubectl get apiservices | grep -q False; then
@@ -444,7 +453,8 @@ function assert::api_service_should_be_available {
   return $ASSERT_FAILED
 }
 
-function assert::pod_should_be {
+# Pods for specified lables in specified namespace should be running
+function assert::pod {
   local status="running"
   local namespace
   local labels
@@ -536,7 +546,8 @@ function assert::pod_should_be {
   return $ASSERT_FAILED
 }
 
-function assert::sa_should_include_image_pull_secret {
+# Specified service account in specified namespace should include specified image pull secret
+function assert::sa-should-include-image-pull-secret {
   local namespace
   local POSITIONAL=()
   while [[ $# -gt 0 ]]; do
@@ -568,7 +579,8 @@ function assert::sa_should_include_image_pull_secret {
   return $ASSERT_FAILED
 }
 
-function assert::secretshare_should_be_cloned {
+# Secretshare should be cloned to target namespace
+function assert::secretshare-should-be-cloned {
   local group=$1
 
   assert_start "$group should be cloned to target namespace ... "
@@ -613,3 +625,5 @@ function assert::secretshare_should_be_cloned {
 
   return $ASSERT_FAILED
 }
+
+assert_list "$@"
