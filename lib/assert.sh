@@ -1,3 +1,5 @@
+#!/bin/bash
+
 . $(dirname $0)/utils.sh
 
 function filter_resource_resp {
