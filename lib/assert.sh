@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. $(dirname $0)/utils.sh
-
 function filter_resource_resp {
   local resource_resp=$1
   local excludes=${@:2}
@@ -134,7 +132,7 @@ function assert::all {
 
 # Specified resource should exist
 function assert::should-exist {
-  local namespace="$(kubectl config view --minify --output 'jsonpath={..namespace}')"
+  local namespace
   local all_namespaces
   local includes
   local POSITIONAL=()
@@ -167,7 +165,7 @@ function assert::should-exist {
       kubectl get $resource --all-namespaces -o name 2>/dev/null > $resource_resp
     fi
   else
-    assert_start "`name_of $resource` should exist in $namespace namespace ... "
+    assert_start "`name_of $resource` should exist ... "
     resource_resp=$TEMP_PATH/$namespace.${resource/\//.}.name
     if [[ ! -f $resource_resp ]]; then
       kubectl get $resource -o name 2>/dev/null > $resource_resp
@@ -182,13 +180,13 @@ function assert::should-exist {
 
           if [[ -n $FLAG_VERBOSE ]]; then
             if [[ -n $namespace ]]; then
-              logger::warn "`name_of $resource` $include not found in namespace $namespace."
+              logger::warn "`name_of $resource` $include not found in $namespace namespace."
               logger::warn "Run 'kubectl get $resource -n $namespace' to check details."
             elif [[ -n $all_namespaces ]]; then
               logger::warn "`name_of $resource` $include not found in all namespaces."
               logger::warn "Run 'kubectl get $resource --all-namespaces' to check details."
             else
-              logger::warn "`name_of $resource` $include not found in namespace $namespace."
+              logger::warn "`name_of $resource` $include not found."
               logger::warn "Run 'kubectl get $resource' to check details."
             fi
           fi
@@ -200,13 +198,13 @@ function assert::should-exist {
 
     if [[ -n $FLAG_VERBOSE ]]; then
       if [[ -n $namespace ]]; then
-        logger::warn "`name_of $resource` not found in namespace $namespace."
+        logger::warn "`name_of $resource` not found in $namespace namespace."
         logger::warn "Run 'kubectl get $resource -n $namespace' to check details."
       elif [[ -n $all_namespaces ]]; then
         logger::warn "`name_of $resource` not found in all namespaces."
         logger::warn "Run 'kubectl get $resource --all-namespaces' to check details."
       else
-        logger::warn "`name_of $resource` not found in namespace $namespace."
+        logger::warn "`name_of $resource` not found."
         logger::warn "Run 'kubectl get $resource' to check details."
       fi
     fi
@@ -219,7 +217,7 @@ function assert::should-exist {
 
 # Specified resource should not exist
 function assert::should-not-exist {
-  local namespace="$(kubectl config view --minify --output 'jsonpath={..namespace}')"
+  local namespace
   local all_namespaces
   local excludes
   local POSITIONAL=()
@@ -252,7 +250,7 @@ function assert::should-not-exist {
       kubectl get $resource --all-namespaces -o name 2>/dev/null > $resource_resp
     fi
   else
-    assert_start "`name_of $resource` should not exist in $namespace namespace ... "
+    assert_start "`name_of $resource` should not exist ... "
     resource_resp=$TEMP_PATH/$namespace.${resource/\//.}.name
     if [[ ! -f $resource_resp ]]; then
       kubectl get $resource -o name 2>/dev/null > $resource_resp
@@ -265,7 +263,7 @@ function assert::should-not-exist {
 
     if [[ -n $FLAG_VERBOSE ]]; then
       if [[ -n $namespace ]]; then
-        logger::warn "`name_of $resource` found in namespace $namespace."
+        logger::warn "`name_of $resource` found in $namespace namespace."
         logger::warn "Run 'kubectl get $resource -n $namespace' to check details."
         (( $FLAG_VERBOSE > 1 )) && kubectl get $resource -n $namespace
       elif [[ -n $all_namespaces ]]; then
@@ -273,7 +271,7 @@ function assert::should-not-exist {
         logger::warn "Run 'kubectl get $resource --all-namespaces' to check details."
         (( $FLAG_VERBOSE > 1 )) && kubectl get $resource --all-namespaces
       else
-        logger::warn "`name_of $resource` found in namespace $namespace."
+        logger::warn "`name_of $resource` found."
         logger::warn "Run 'kubectl get $resource' to check details."
         (( $FLAG_VERBOSE > 1 )) && kubectl get $resource
       fi
@@ -382,13 +380,13 @@ function assert::helmrelease-should-be-deletable {
     esac
   done
 
-  assert_start "helmrelease should be deletable in namespace $namespace ... "
+  assert_start "helmrelease should be deletable in $namespace namespace ... "
 
   if kubectl get helmreleases.apps.open-cluster-management.io -n $namespace -o yaml 2>/dev/null | grep -q Irreconcilable; then
     assert_fail
 
     if [[ -n $FLAG_VERBOSE ]]; then
-      logger::warn "Some helmreleases are failed to be deleted in namespace $namespace."
+      logger::warn "Some helmreleases are failed to be deleted in $namespace namespace."
       logger::warn "Run 'kubectl get helmreleases.apps.open-cluster-management.io -n $namespace -o yaml | grep Irreconcilable -B 8' to check details."
       (( $FLAG_VERBOSE > 1 )) && kubectl get helmreleases.apps.open-cluster-management.io -n $namespace -o yaml | grep Irreconcilable -B 8
     fi
