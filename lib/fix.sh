@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. $(cd $(dirname $0) && pwd)/utils.sh
+
 function get_fix_methods_info {
   FIX_METHODS_INFO=()
   local methods=($(cat $0 | grep "^function fix::.* {$" | awk '{print $2}'))
@@ -37,7 +39,7 @@ function fix {
   if type $method &>/dev/null ; then
     $method "${POSITIONAL[@]:1}"
   else
-    logger::warn "Unknown command: $method"
+    echo 'Argument "'$method'" not known.'
     list_fix_methods
   fi
 }

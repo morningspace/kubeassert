@@ -114,7 +114,7 @@ function assert {
   if type $method &>/dev/null ; then
     $method "${POSITIONAL[@]:1}"
   else
-    logger::warn "Unknown command: $method"
+    echo 'Argument "'$method'" not known.'
     list_assert_methods
   fi
 }
