@@ -523,27 +523,21 @@ function assert::pod-status {
   if [ ${#failed_pods_lines[@]} -gt 1 ]; then
     assert_fail
 
-    if (( $FLAG_VERBOSE > 1 )); then
+    if [[ -n $FLAG_VERBOSE ]]; then
       logger::warn "Some failed pods found in $namespace namespace."
       logger::warn "Run 'kubectl get pod -n $namespace -l=\"$labels\"' to check details."
-      for failed_pod_line in "${failed_pods_lines[@]}"; do
-        echo "$failed_pod_line"
-      done
-    fi
-  elif [ ${#failed_pods_lines[@]} -eq 1 ]; then
-    local pods_lines_num=$(cat $resource_resp | wc -l)
-    if [ $pods_lines_num -eq 1 ]; then
-      assert_fail
 
       if (( $FLAG_VERBOSE > 1 )); then
-        logger::warn "Pods not found in $namespace namespace."
+        for failed_pod_line in "${failed_pods_lines[@]}"; do
+          echo "$failed_pod_line"
+        done
       fi
     fi
   else
     assert_fail
     
-    if (( $FLAG_VERBOSE > 1 )); then
-      logger::warn "Something wrong when get pods."
+    if [[ -n $FLAG_VERBOSE ]]; then
+      logger::warn "Something wrong when get pods or pods not found in $namespace namespace."
       logger::warn "Run 'kubectl get pod -n $namespace -l=\"$labels\"' to check details."
     fi
   fi
