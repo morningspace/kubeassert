@@ -45,6 +45,7 @@ function should_not_keep_terminating_single {
         logger::warn "Run 'kubectl get $resource -o yaml' to check details."
         (( $FLAG_VERBOSE > 1 )) && kubectl get $resource -o yaml
       fi
+      logger::warn "Run '$0 fix' and choose the appropriate command to delete the resource."
     fi
   fi
 
@@ -452,6 +453,7 @@ function assert::api-service-should-be-available {
       logger::warn "Some api services are not available."
       logger::warn "Run 'kubectl get apiservices | grep False' to check details."
       (( $FLAG_VERBOSE > 1 )) && kubectl get apiservices | grep False
+      logger::warn "Run '$0 fix' and choose the appropriate method to get the bad api services back or delete them completely."
     fi
   fi
 
