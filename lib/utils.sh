@@ -47,3 +47,5 @@ mkdir -p $TEMP_PATH
 function on_exit {
   rm -rf $TEMP_PATH
 }
+
+trap on_exit exit
