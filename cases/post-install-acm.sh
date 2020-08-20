@@ -24,7 +24,7 @@ function assert::helmrelease-installed {
 }
 
 # Make sure the number of running pods for RHACM is no less than 55
-function assert::pod-num {
+function assert::pod-num-no-less-than-55 {
   assert::pod-num no_less_than 55 -n open-cluster-management
 }
 

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-FLAG_VERBOSE=0
-
 function filter_resource_resp {
   local resource_resp=$1
   local excludes=${@:2}
