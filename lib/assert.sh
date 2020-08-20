@@ -1,5 +1,7 @@
 #!/bin/bash
 
+FLAG_VERBOSE=0
+
 function filter_resource_resp {
   local resource_resp=$1
   local excludes=${@:2}
@@ -482,9 +484,7 @@ function assert::pod-status {
   assert_start "pods are $status for labels $labels in $namespace namespace ... "
 
   local resource_resp=$TEMP_PATH/$namespace.pods
-  if [[ ! -f $resource_resp ]]; then
-    kubectl get pod -n $namespace -l="$labels" 2>/dev/null > $resource_resp
-  fi
+  kubectl get pod -n $namespace -l="$labels" 2>/dev/null > $resource_resp
 
   local parts
   local ready
