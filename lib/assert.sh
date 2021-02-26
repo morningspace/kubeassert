@@ -627,4 +627,52 @@ function assert::secretshare-should-be-cloned {
   return $ASSERT_FAILED
 }
 
+# Resrouce YAML should include or exclude specified string
+function assert::resource-status {
+  local namespace
+  local include
+  local exclude
+  local POSITIONAL=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -n|--namespace)
+      namespace=$2; shift 2 ;;
+    --include)
+      include=$2; shift 2 ;;
+    --exclude)
+      exclude=$2; shift 2 ;;
+    *)
+      POSITIONAL+=("$1"); shift ;;
+    esac
+  done
+
+  local resource=${POSITIONAL[0]}
+
+  assert_start "resource $resource in $namespace namespace ... "
+
+  if [[ -n $include ]] && ! kubectl get $resource -n $namespace -o yaml | grep -q $include; then
+    assert_fail
+
+    if [[ -n $FLAG_VERBOSE ]]; then
+      logger::warn "Resource $resource does not include specified string $include."
+      logger::warn "Run 'kubectl get $resource -n $namespace -o yaml' to check details."
+      (( $FLAG_VERBOSE > 1 )) && kubectl get $resource -n $namespace -o yaml
+    fi
+  fi
+
+  if [[ -n $exclude ]] && ! kubectl get $resource -n $namespace -o yaml | grep -q $exclude; then
+    assert_fail
+
+    if [[ -n $FLAG_VERBOSE ]]; then
+      logger::warn "Resource $resource include specified string $exclude."
+      logger::warn "Run 'kubectl get $resource -n $namespace -o yaml' to check details."
+      (( $FLAG_VERBOSE > 1 )) && kubectl get $resource -n $namespace -o yaml
+    fi
+  fi
+
+  assert_end
+
+  return $ASSERT_FAILED
+}
+
 assert "$@"
