@@ -38,5 +38,12 @@ function assert::pod-running-for-cs {
   assert::pod-status -n ibm-common-services -l app=management-ingress
 }
 
+# Make sure MCM Core component are installed well
+function assert::mcm-core-installed-well {
+  assert::resource-status -n kube-system McmCore --include Deployed
+  assert::resource-status -n kube-system McmSearch --include Deployed
+  assert::resource-status -n kube-system Kui --include Deployed
+}
+
 . $(cd $(dirname $0) && pwd)/../lib/utils.sh
 . $(cd $(dirname $0) && pwd)/../lib/assert.sh
