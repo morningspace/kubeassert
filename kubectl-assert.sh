@@ -206,9 +206,9 @@ function list_assertions {
   local assertions=(`cat $0 | grep '^#.*@Name:' | awk '{print $3}'`)
 
   for assertion in "${assertions[@]}"; do
-    local comment="`sed -n -e "/#.*@Name: $assertion$/,/function.*assert::$assertion.*{/ p" $0 | sed -e '1d;$d'`"
+    local comment="`sed -n -e "/#.*@Name: $assertion$/,/function.*$assertion.*{/ p" $0 | sed -e '1d;$d'`"
     local description="`echo "$comment" | grep '^#.*@Description:' | sed -n 's/^#.*@Description:[[:space:]]*//p'`"
-    printf "  %-36s %s\n" "${assertion#assert::}" "${description#\# }"
+    printf "  %-36s %s\n" "$assertion" "$description"
   done
 }
 
@@ -227,7 +227,7 @@ GLOBAL_OPTIONS=(
 
 function show_assertion_help {
   local name="$1"
-  local comment="`sed -n -e "/^#.*@Name: $name$/,/function.*assert::$name.*{/ p" $0 | sed -e '1d;$d'`"
+  local comment="`sed -n -e "/^#.*@Name: $name$/,/function.*$name.*{/ p" $0 | sed -e '1d;$d'`"
   local description="`echo "$comment" | grep '^#.*@Description:' | sed -n 's/^#.*@Description:[[:space:]]*//p'`"
   local usage="`echo "$comment" | grep '^#.*@Usage:' | sed -n 's/^#.*@Usage:[[:space:]]*//p'`"
   local options=()
@@ -271,12 +271,12 @@ function run_assertion {
 
   local what=${POSITIONAL[0]}
   if [[ -n $what ]]; then
-    if type assert::$what &>/dev/null ; then
+    if type $what &>/dev/null ; then
       if [[ $HELP == 1 ]]; then
         show_assertion_help $what
       else
         set -- ${POSITIONAL[@]}
-        assert::$what ${@:2}
+        $what ${@:2}
         logger::pass
       fi
     else
@@ -307,7 +307,7 @@ function run_assertion {
 #   kubectl assert exist pods -l 'app=echo' --field-selector 'status.phase=Running' -n default
 #   kubectl assert exist deployment,pod -l 'app=echo' --field-selector 'metadata.namespace==default' --all-namespaces
 # 
-function assert::exist {
+function exist {
   parse_select_args $@
 
   set -- ${POSITIONAL[@]}
@@ -349,7 +349,7 @@ function assert::exist {
 #   kubectl assert not-exist pods -l 'app=nginx' --field-selector 'status.phase=Running' -n default
 #   kubectl assert not-exist deployments,pods -l 'app=echo' --field-selector 'metadata.namespace==default' --all-namespaces
 # 
-function assert::not-exist {
+function not-exist {
   parse_select_args $@
 
   set -- ${POSITIONAL[@]}
@@ -394,7 +394,7 @@ function assert::not-exist {
 #   kubectl assert exist-enhanced serviceaccounts --field-selector secrets[*].name=~inframgmtinstall-orchestrator-token.* -n manageiq
 #   kubectl assert exist-enhanced serviceaccounts --field-selector secrets[*].name=~infra.* -n manageiq
 # 
-function assert::exist-enhanced {
+function exist-enhanced {
   parse_select_args $@
   parse_enhanced_selector
 
@@ -464,7 +464,7 @@ function assert::exist-enhanced {
 #   kubectl assert not-exist-enhanced pods --field-selector metadata.deletionTimestamp!='<none>' -A
 #   kubectl assert not-exist-enhanced pods --field-selector metadata.deletionTimestamp!='<none>',status.phase==Running -A
 # 
-function assert::not-exist-enhanced {
+function not-exist-enhanced {
   parse_select_args $@
   parse_enhanced_selector
 
@@ -532,7 +532,7 @@ function assert::not-exist-enhanced {
 #   kubectl assert num pods --all-namespaces -ge 10
 #   kubectl assert num pods -n default -le 10
 #
-function assert::num {
+function num {
   parse_select_args $@
 
   set -- ${POSITIONAL[@]}
@@ -580,7 +580,7 @@ function assert::num {
 #   kubectl assert pod-not-terminating -n default
 #   kubectl assert pod-not-terminating --all-namespaces
 # 
-function assert::pod-not-terminating {
+function pod-not-terminating {
   parse_select_args $@
 
   POSITIONAL=(pod ${POSITIONAL[@]})
@@ -630,7 +630,7 @@ function assert::pod-not-terminating {
 #   kubectl assert restarts pods -n default -lt 10
 #   kubectl assert restarts pods -l 'app=echo' -n default -le 10
 # 
-function assert::pod-restarts {
+function pod-restarts {
   parse_select_args $@
 
   set -- ${POSITIONAL[@]}
@@ -689,7 +689,7 @@ function assert::pod-restarts {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 #
-function assert::pod-ready {
+function pod-ready {
   parse_select_args $@
 
   POSITIONAL=(pod ${POSITIONAL[@]})
@@ -740,7 +740,7 @@ function assert::pod-ready {
 # @Examples:
 #   kubectl assert apiservice-available
 #
-function assert::apiservice-available {
+function apiservice-available {
   logger::assert "apiservices should be available."
 
   if kubectl get apiservices; then
