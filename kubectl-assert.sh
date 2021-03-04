@@ -8,6 +8,8 @@ GREEN="\033[0;32m"
 NORMAL="\033[0m"
 RED="\033[0;31m"
 
+IS_FAILED=0
+
 WORKDIR=~/.kube-assert
 mkdir -p $WORKDIR
 
@@ -31,7 +33,6 @@ function logger::error {
 
 function logger::assert {
   echo -e "${CYAN}ASSERT ${NORMAL}$@" >&2
-  IS_FAILED=0
 }
 
 function logger::fail {
@@ -203,10 +204,19 @@ function parse_enhanced_selector {
 
 function list_assertions {
   echo "Supported assertions:"
-  local assertions=(`cat $0 | grep '^#.*@Name:' | awk '{print $3}'`)
+  # default ones
+  list_assertions_in $0
+  # custom ones
+  for file in "$WORKDIR"/*.sh; do
+    list_assertions_in "$file"
+  done
+}
+
+function list_assertions_in {
+  local assertions=(`cat $1 | grep '^#.*@Name:' | awk '{print $3}'`)
 
   for assertion in "${assertions[@]}"; do
-    local comment="`sed -n -e "/#.*@Name: $assertion$/,/function.*$assertion.*{/ p" $0 | sed -e '1d;$d'`"
+    local comment="`sed -n -e "/#.*@Name: $assertion$/,/function.*$assertion.*{/ p" $1 | sed -e '1d;$d'`"
     local description="`echo "$comment" | grep '^#.*@Description:' | sed -n 's/^#.*@Description:[[:space:]]*//p'`"
     printf "  %-36s %s\n" "$assertion" "$description"
   done
@@ -227,8 +237,22 @@ GLOBAL_OPTIONS=(
 )
 
 function show_assertion_help {
-  local name="$1"
-  local comment="`sed -n -e "/^#.*@Name: $name$/,/function.*$name.*{/ p" $0 | sed -e '1d;$d'`"
+  local files=()
+  for file in "$WORKDIR"/*.sh; do files+=($file); done
+  files+=($0)
+
+  for file in ${files[@]}; do
+    local assertions=(`cat $file | grep '^#.*@Name:' | awk '{print $3}'`)
+    if [[ ' '${assertions[@]}' ' =~ [[:space:]]+$1[[:space:]]+ ]]; then
+      show_assertion_help_in $file $1
+      break
+    fi
+  done
+}
+
+function show_assertion_help_in {
+  local name="$2"
+  local comment="`sed -n -e "/^#.*@Name: $name$/,/function.*$name.*{/ p" $1 | sed -e '1d;$d'`"
   local description="`echo "$comment" | grep '^#.*@Description:' | sed -n 's/^#.*@Description:[[:space:]]*//p'`"
   local usage="`echo "$comment" | grep '^#.*@Usage:' | sed -n 's/^#.*@Usage:[[:space:]]*//p'`"
   local options=()
@@ -775,5 +799,8 @@ function apiservice-available {
     logger::fail "Error getting apiservices."
   fi
 }
+
+# Load custom assertions
+for file in "$WORKDIR"/*.sh; do . $file; done
 
 run_assertion "$@"
