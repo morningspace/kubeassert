@@ -222,7 +222,8 @@ SELECT_OPTIONS=(
   "-n, --namespace='': If present, the namespace scope for this CLI request."
 )
 GLOBAL_OPTIONS=(
-  "-v: enable the verbose log."
+  "-v, --verbose: Enable the verbose log."
+  "-h, --help: Print the help information."
 )
 
 function show_assertion_help {
@@ -255,15 +256,18 @@ function show_assertion_help {
     fi
   done <<< "$comment"
 
-  echo "$description"
-  echo
-  echo "Usage: $usage"
-  echo
-  echo "Options:"
-  for option in "${options[@]}"; do echo "  $option"; done
-  echo
-  echo "Examples:"
-  for example in "${examples[@]}"; do echo "  $example"; done
+  [[ -n $description ]] && echo "$description" || echo "$name"
+  [[ -n $usage ]] && echo && echo "Usage: $usage"
+
+  if [[ -n ${options[@]} ]]; then
+    echo; echo "Options:"
+    for option in "${options[@]}"; do echo "  $option"; done
+  fi
+
+  if [[ -n ${examples[@]} ]]; then
+    echo; echo "Examples:"
+    for example in "${examples[@]}"; do echo "  $example"; done
+  fi
 }
 
 function run_assertion {
@@ -288,16 +292,13 @@ function run_assertion {
 }
 
 ##
+#
 # @Name: exist
-#
 # @Description: Assert resource should exist.
-#
 # @Usage: kubectl assert exist (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
-#
 # @Options:
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
-#
 # @Examples:
 #   kubectl assert exist pods
 #   kubectl assert exist replicaset -n default
@@ -330,16 +331,13 @@ function exist {
 }
 
 ##
+#
 # @Name: not-exist
-#
 # @Description: Assert resource should not exist.
-#
 # @Usage: kubectl assert not-exist (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
-#
 # @Options:
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
-#
 # @Examples:
 #   kubectl assert not-exist pods
 #   kubectl assert not-exist statefulsets -n default
@@ -372,16 +370,13 @@ function not-exist {
 }
 
 ##
+#
 # @Name: exist-enhanced
-#
 # @Description: Assert resource should exist using enhanced field selector.
-#
 # @Usage: kubectl assert exist-enhanced (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
-#
 # @Options:
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
-#
 # @Examples:
 #   kubectl assert exist-enhanced pods --field-selector status.phase=Running --all-namespaces
 #   kubectl assert exist-enhanced deployments --field-selector status.readyReplicas=1 -n default
@@ -444,16 +439,13 @@ function exist-enhanced {
 }
 
 ##
+#
 # @Name: not-exist-enhanced
-#
 # @Description: Assert resource should not exist using enhanced field selector.
-#
 # @Usage: kubectl assert not-exist-enhanced (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
-#
 # @Options:
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
-#
 # @Examples:
 #   kubectl assert not-exist-enhanced pods --field-selector status.phase=Running --all-namespaces
 #   kubectl assert not-exist-enhanced deployments --field-selector status.readyReplicas=1 -n default
@@ -514,17 +506,14 @@ function not-exist-enhanced {
 }
 
 ##
+#
 # @Name: num
-#
 # @Description: Assert the number of resource should match specified criteria.
-#
 # @Usage: kubectl assert num (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options] (-eq|-lt|-gt|-ge|-le VALUE)
-#
 # @Options:
 #   ${OP_VAL_OPTIONS}
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
-#
 # @Examples:
 #   kubectl assert num pods -n default -eq 10
 #   kubectl assert num pods -l "app=echo" -n default -le 3
@@ -566,16 +555,13 @@ function num {
 }
 
 ##
+#
 # @Name: pod-not-terminating
-#
 # @Description: Assert pod should not keep terminating.
-#
 # @Usage: kubectl assert pod-not-terminating [options]
-#
 # @Options:
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
-#
 # @Examples:
 #   kubectl assert pod-not-terminating -n default
 #   kubectl assert pod-not-terminating --all-namespaces
@@ -615,17 +601,14 @@ function pod-not-terminating {
 }
 
 ##
+#
 # @Name: pod-restarts
-#
 # @Description: Assert pod restarts should not match specified criteria.
-#
 # @Usage: kubectl assert pod-restarts [options] (-eq|-lt|-gt|-ge|-le VALUE)
-#
 # @Options:
 #   ${OP_VAL_OPTIONS}
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
-#
 # @Examples:
 #   kubectl assert restarts pods -n default -lt 10
 #   kubectl assert restarts pods -l 'app=echo' -n default -le 10
@@ -679,15 +662,15 @@ function pod-restarts {
 }
 
 ##
+#
 # @Name: pod-ready
-#
 # @Description: Assert pod should be ready.
-#
 # @Usage: kubectl assert pod-ready [options]
-#
 # @Options:
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
+# @Examples:
+#   kubectl assert pod-ready pods --all-namespaces
 #
 function pod-ready {
   parse_select_args $@
@@ -728,15 +711,12 @@ function pod-ready {
 }
 
 ##
+#
 # @Name: apiservice-available
-#
 # @Description: Assert apiservice should be available.
-#
 # @Usage: kubectl assert apiservice-available [options]
-#
 # @Options:
 #   ${GLOBAL_OPTIONS}
-#
 # @Examples:
 #   kubectl assert apiservice-available
 #
