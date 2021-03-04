@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# help info
 # Custom assertion
 # Itegrate w/ KUTTL
 
@@ -46,12 +45,15 @@ function logger::pass {
 
 function parse_common_args {
   VERBOSE=''
+  HELP=''
   POSITIONAL=()
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
     -v|--verbose)
       VERBOSE=1; shift ;;
+    -h|--help)
+      HELP=1; shift ;;
     *)
       POSITIONAL+=("$1"); shift ;;
     esac
@@ -205,9 +207,63 @@ function list_assertions {
 
   for assertion in "${assertions[@]}"; do
     local comment="`sed -n -e "/#.*@Name: $assertion$/,/function.*assert::$assertion.*{/ p" $0 | sed -e '1d;$d'`"
-    local description="`echo "$comment" | grep '^#.*@Description:' | sed -n 's/^#.*@Description://p'`"
+    local description="`echo "$comment" | grep '^#.*@Description:' | sed -n 's/^#.*@Description:[[:space:]]*//p'`"
     printf "  %-36s %s\n" "${assertion#assert::}" "${description#\# }"
   done
+}
+
+OP_VAL_OPTIONS=(
+  "-eq, -lt, -gt, -ge, -le: Check if the actual value is equal to, less than, greater than, no less than, or no greater than expected value."
+)
+SELECT_OPTIONS=(
+  "-A, --all-namespaces: If present, list the requested object(s) across all namespaces. Namespace in current context is ignored even if specified with --namespace."
+  "    --field-selector='': Selector (field query) to filter on, supports '=', '==', and '!='. The server only supports a limited number of field queries per type."
+  "-l, --selector='': Selector (label query) to filter on, supports '=', '==', and '!='."
+  "-n, --namespace='': If present, the namespace scope for this CLI request."
+)
+GLOBAL_OPTIONS=(
+  "-v: enable the verbose log."
+)
+
+function show_assertion_help {
+  local name="$1"
+  local comment="`sed -n -e "/^#.*@Name: $name$/,/function.*assert::$name.*{/ p" $0 | sed -e '1d;$d'`"
+  local description="`echo "$comment" | grep '^#.*@Description:' | sed -n 's/^#.*@Description:[[:space:]]*//p'`"
+  local usage="`echo "$comment" | grep '^#.*@Usage:' | sed -n 's/^#.*@Usage:[[:space:]]*//p'`"
+  local options=()
+  local examples=()
+  local parsing
+
+  while IFS= read -r line; do
+    [[ $line =~ ^#.*@Options:$ ]] && parsing=Options && continue
+    [[ $line =~ ^#.*@Examples:$ ]] && parsing=Examples && continue
+
+    if [[ $parsing == Options ]] && [[ ! $line =~ ^#$ ]]; then
+      if [[ $line =~ '${OP_VAL_OPTIONS}' ]]; then
+        options+=("${OP_VAL_OPTIONS[@]}")
+      elif [[ $line =~ '${SELECT_OPTIONS}' ]]; then
+        options+=("${SELECT_OPTIONS[@]}")
+      elif [[ $line =~ '${GLOBAL_OPTIONS}' ]]; then
+        options+=("${GLOBAL_OPTIONS[@]}")
+      else
+        options+=("`echo $line | sed -n 's/^#[[:space:]]*//p'`")
+      fi
+    fi
+    
+    if [[ $parsing == Examples ]] && [[ ! $line =~ ^#$ ]]; then
+      examples+=("`echo $line | sed -n 's/^#[[:space:]]*//p'`")
+    fi
+  done <<< "$comment"
+
+  echo "$description"
+  echo
+  echo "Usage: $usage"
+  echo
+  echo "Options:"
+  for option in "${options[@]}"; do echo "  $option"; done
+  echo
+  echo "Examples:"
+  for example in "${examples[@]}"; do echo "  $example"; done
 }
 
 function run_assertion {
@@ -216,9 +272,13 @@ function run_assertion {
   local what=${POSITIONAL[0]}
   if [[ -n $what ]]; then
     if type assert::$what &>/dev/null ; then
-      set -- ${POSITIONAL[@]}
-      assert::$what ${@:2}
-      logger::pass
+      if [[ $HELP == 1 ]]; then
+        show_assertion_help $what
+      else
+        set -- ${POSITIONAL[@]}
+        assert::$what ${@:2}
+        logger::pass
+      fi
     else
       logger::error 'Unknown assertion "'$what'".' && exit 1
     fi
@@ -235,8 +295,8 @@ function run_assertion {
 # @Usage: kubectl assert exist (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
 #
 # @Options:
-#   ${select_options}
-#   ${global_options}
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
 #
 # @Examples:
 #   kubectl assert exist pods
@@ -277,8 +337,8 @@ function assert::exist {
 # @Usage: kubectl assert not-exist (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
 #
 # @Options:
-#   ${select_options}
-#   ${global_options}
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
 #
 # @Examples:
 #   kubectl assert not-exist pods
@@ -319,8 +379,8 @@ function assert::not-exist {
 # @Usage: kubectl assert exist-enhanced (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
 #
 # @Options:
-#   ${select_options}
-#   ${global_options}
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
 #
 # @Examples:
 #   kubectl assert exist-enhanced pods --field-selector status.phase=Running --all-namespaces
@@ -391,8 +451,8 @@ function assert::exist-enhanced {
 # @Usage: kubectl assert not-exist-enhanced (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
 #
 # @Options:
-#   ${select_options}
-#   ${global_options}
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
 #
 # @Examples:
 #   kubectl assert not-exist-enhanced pods --field-selector status.phase=Running --all-namespaces
@@ -461,9 +521,9 @@ function assert::not-exist-enhanced {
 # @Usage: kubectl assert num (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options] (-eq|-lt|-gt|-ge|-le VALUE)
 #
 # @Options:
-#   ${op_val_options}
-#   ${select_options}
-#   ${global_options}
+#   ${OP_VAL_OPTIONS}
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
 #
 # @Examples:
 #   kubectl assert num pods -n default -eq 10
@@ -506,15 +566,15 @@ function assert::num {
 }
 
 ##
-# @Name: pod-not-terminatin
+# @Name: pod-not-terminating
 #
 # @Description: Assert pod should not keep terminating.
 #
 # @Usage: kubectl assert pod-not-terminating [options]
 #
 # @Options:
-#   ${select_options}
-#   ${global_options}
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
 #
 # @Examples:
 #   kubectl assert pod-not-terminating -n default
@@ -562,9 +622,9 @@ function assert::pod-not-terminating {
 # @Usage: kubectl assert pod-restarts [options] (-eq|-lt|-gt|-ge|-le VALUE)
 #
 # @Options:
-#   ${op_val_options}
-#   ${select_options}
-#   ${global_options}
+#   ${OP_VAL_OPTIONS}
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
 #
 # @Examples:
 #   kubectl assert restarts pods -n default -lt 10
@@ -626,8 +686,8 @@ function assert::pod-restarts {
 # @Usage: kubectl assert pod-ready [options]
 #
 # @Options:
-#   ${select_options}
-#   ${global_options}
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
 #
 function assert::pod-ready {
   parse_select_args $@
@@ -675,7 +735,7 @@ function assert::pod-ready {
 # @Usage: kubectl assert apiservice-available [options]
 #
 # @Options:
-#   ${global_options}
+#   ${GLOBAL_OPTIONS}
 #
 # @Examples:
 #   kubectl assert apiservice-available
