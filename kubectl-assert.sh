@@ -250,6 +250,8 @@ function parse_resource_rows {
 }
 
 function list_assertions {
+  DEFAULT_ASSERTIONS=(`cat $0 | grep '^#[[:space:]]*@Name:' | sed -n 's/^#[[:space:]]*@Name://p'`)
+
   echo "Supported assertions:"
   # default ones
   list_assertions_in $0
@@ -263,6 +265,8 @@ function list_assertions_in {
   local assertions=(`cat $1 | grep '^#[[:space:]]*@Name:' | sed -n 's/^#[[:space:]]*@Name://p'`)
 
   for name in "${assertions[@]}"; do
+    # skip custom assertion when found as default one
+    [[ $1 != $0 && ' '${DEFAULT_ASSERTIONS[@]}' ' =~ [[:space:]]+$name[[:space:]]+ ]] && continue
     local comment="`sed -n -e "/^#[[:space:]]*@Name:[[:space:]]*$name$/,/^##$/p" $1 | sed -e '1d;$d'`"
     local description="`echo "$comment" | grep '^#[[:space:]]*@Description:[[:space:]]*' | sed -n 's/^#[[:space:]]*@Description:[[:space:]]*//p'`"
     printf "  %-36s %s\n" "$name" "$description"
