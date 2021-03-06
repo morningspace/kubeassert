@@ -13,7 +13,7 @@ To validate the installation, run the script:
 ./kubectl-assert
 ```
 
-You will see the general help information and a list of assertions that are currently supported by Kube Assert. Run the script with a specified assertion along with `--help` option, you will see more information on how to use each assertion. For example:
+You will see the general help information and a list of assertions that are currently supported by Kube Assert out of the box. Run the script with a specified assertion along with `--help` option, you will see more information on how to use each assertion. For example:
 ```shell
 ./kubectl-assert exist --help
 ```

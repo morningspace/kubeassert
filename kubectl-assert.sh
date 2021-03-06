@@ -258,7 +258,7 @@ function parse_resource_rows {
 function list_assertions {
   DEFAULT_ASSERTIONS=(`cat $0 | grep '^#[[:space:]]*@Name:' | sed -n 's/^#[[:space:]]*@Name://p'`)
 
-  echo "kubectl-assert asserts the Kubernetes resources."
+  echo "Kube Assert - the kubectl plugin to assert Kubernetes resources."
   echo
   echo " Find more information at: https://morningspacce.github.io/kube-assert/docs/"
   echo
