@@ -370,19 +370,19 @@ function run_assertion {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert resources exist in current namespace
+#   # To assert resources exist in current namespace.
 #   kubectl assert exist pods
-#   # Assert resources exist in specified namespace 
+#   # To assert resources exist in specified namespace.
 #   kubectl assert exist replicasets -n default
-#   # Assert specified resource exists 
+#   # To assert specified resource exists.
 #   kubectl assert exist deployment echo -n default
-#   # Assert resources with specified label exist
+#   # To assert resources with specified label exist.
 #   kubectl assert exist pods -l 'app=echo' -n default
-#   # Assert resources with specified field selector exist
+#   # To assert resources with specified field selector exist.
 #   kubectl assert exist pods --field-selector 'status.phase=Running' -n default
-#   # Assert resources with specified label and field selector exist
+#   # To assert resources with specified label and field selector exist.
 #   kubectl assert exist pods -l 'app=echo' --field-selector 'status.phase=Running' -n default
-#   # Assert resources with multiple specified lables and field selectors exist in some namespaces
+#   # To assert resources with multiple specified lables and field selectors exist in some namespaces.
 #   kubectl assert exist deployment,pod -l 'app=echo,component=echo' --field-selector 'metadata.namespace==default' --all-namespaces
 ##
 function exist {
@@ -415,19 +415,19 @@ function exist {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert resources not exist in current namespace
+#   # To assert resources not exist in current namespace.
 #   kubectl assert not-exist pods
-#   # Assert resources not exist in specified namespace
+#   # To assert resources not exist in specified namespace.
 #   kubectl assert not-exist statefulsets -n default
-#   # Assert specified resource not exist
+#   # To assert specified resource not exist.
 #   kubectl assert not-exist deployment echo -n default
-#   # Assert resources with specified label not exist
+#   # To assert resources with specified label not exist.
 #   kubectl assert not-exist pods -l 'app=echo' -n default
-#   # Assert resources with specified field selector not exist
+#   # To assert resources with specified field selector not exist.
 #   kubectl assert not-exist pods --field-selector 'status.phase=Error' -n default
-#   # Assert resources with specified label and field selector not exist
+#   # To assert resources with specified label and field selector not exist.
 #   kubectl assert not-exist pods -l 'app=echo' --field-selector 'status.phase=Error' -n default
-#   # Assert resources with multiple specified lables and field selectors not exist in any namespace
+#   # To assert resources with multiple specified lables and field selectors not exist in any namespace.
 #   kubectl assert not-exist deployments,pods -l 'app=echo,component=echo' --field-selector 'metadata.namespace==default' --all-namespaces
 ##
 function not-exist {
@@ -460,24 +460,24 @@ function not-exist {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert pods in running status exist in current namespace
+#   # To assert pods in running status exist in current namespace.
 #   kubectl assert exist-enhanced pods --field-selector status.phase=Running
-#   # Assert pods with specified label in running status exist
+#   # To assert pods with specified label in running status exist.
 #   kubectl assert exist-enhanced pods --field-selector metadata.labels.app=echo,status.phase=Running
-#   # Assert pods being deleted exist in some namespaces
+#   # To assert pods being deleted exist in some namespaces.
 #   kubectl assert exist-enhanced pods --field-selector metadata.deletionTimestamp!='<none>' --all-namespaces
-#   # Assert pods being deleted keeping running exist in some namespaces
+#   # To assert pods being deleted keeping running exist in some namespaces.
 #   kubectl assert exist-enhanced pods --field-selector metadata.deletionTimestamp!='<none>',status.phase==Running --all-namespaces
-#   # Assert deployments have specified replicas ready
+#   # To assert deployments have specified replicas ready.
 #   kubectl assert exist-enhanced deployments --field-selector status.readyReplicas=1 -n default
 #   kubectl assert exist-enhanced deployments --field-selector status.readyReplicas=1 --field-selector metadata.namespace=default --all-namespaces
-#   # Assert deployments with specified label have specified replicas ready
+#   # To assert deployments with specified label have specified replicas ready.
 #   kubectl assert exist-enhanced deployments --field-selector metadata.labels.app=echo,status.readyReplicas=1
-#   # Assert service accounts with specified secret exist using regex
+#   # To assert service accounts with specified secret exist using regex.
 #   kubectl assert exist-enhanced serviceaccounts --field-selector secrets[*].name=~my-secret -n default
-#   # Assert MyResources with specified status exist using regex
+#   # To assert MyResources with specified status exist using regex.
 #   kubectl assert exist-enhanced MyResources --field-selector status.conditions[*].type=~Deployed -n default
-#   # Assert MyResources with their names in a specified list exist using regex
+#   # To assert MyResources with their names in a specified list exist using regex.
 #   kubectl assert exist-enhanced MyResource --field-selector metadata.name=~'foo.*|bar.*|baz.*' -n default
 ##
 function exist-enhanced {
@@ -513,20 +513,20 @@ function exist-enhanced {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert pods in error status not exist in current namespace
+#   # To assert pods in error status not exist in current namespace.
 #   kubectl assert not-exist-enhanced pods --field-selector status.phase=Error
-#   # Assert pods with specified label in error status not exist
+#   # To assert pods with specified label in error status not exist.
 #   kubectl assert not-exist-enhanced pods --field-selector metadata.labels.app=echo,status.phase=Error
-#   # Assert pods being deleted not exist in any namespace
+#   # To assert pods being deleted not exist in any namespace.
 #   kubectl assert not-exist-enhanced pods --field-selector metadata.deletionTimestamp!='<none>' --all-namespaces
-#   # Assert pods being deleted keeping running not exist in some namespaces
+#   # To assert pods being deleted keeping running not exist in some namespaces.
 #   kubectl assert not-exist-enhanced pods --field-selector metadata.deletionTimestamp!='<none>',status.phase==Running --all-namespaces
-#   # Assert deployments have replicas not ready
+#   # To assert deployments have replicas not ready.
 #   kubectl assert not-exist-enhanced deployments --field-selector status.readyReplicas=0 -n default
 #   kubectl assert not-exist-enhanced deployments --field-selector status.readyReplicas=0 --field-selector metadata.namespace=default --all-namespaces
-#   # Assert deployments with specified label have replicas not ready
+#   # To assert deployments with specified label have replicas not ready.
 #   kubectl assert not-exist-enhanced deployments --field-selector metadata.labels.app=echo,status.readyReplicas=0
-#   # Assert namespace keeps terminating not exist
+#   # To assert namespace keeps terminating not exist.
 #   kubectl assert not-exist-enhanced namespace --field-selector metadata.deletetionTimestamp!='<none>',spec.finalizers[*]!='<none>'
 ##
 function not-exist-enhanced {
@@ -563,13 +563,13 @@ function not-exist-enhanced {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert number of pods in specified namespace equal to specified value
+#   # To assert number of pods in specified namespace equal to specified value.
 #   kubectl assert num pods -n default -eq 10
-#   # Assert number of pods in specified namespace less than specified value
+#   # To assert number of pods in specified namespace less than specified value.
 #   kubectl assert num pods -n default -lt 11
-#   # Assert number of pods with specified label in specified namespace no more than specified value
+#   # To assert number of pods with specified label in specified namespace no more than specified value.
 #   kubectl assert num pods -l "app=echo" -n default -le 3
-#   # Assert number of specified pod greater than specified value
+#   # To assert number of specified pod greater than specified value.
 #   kubectl assert num pod echo -n default -gt 0
 ##
 function num {
@@ -613,9 +613,9 @@ function num {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert no pod terminating in specified namespace
+#   # To assert no pod terminating in specified namespace.
 #   kubectl assert pod-not-terminating -n default
-#   # Assert no pod terminating in any namespace
+#   # To assert no pod terminating in any namespace.
 #   kubectl assert pod-not-terminating --all-namespaces
 ##
 function pod-not-terminating {
@@ -661,11 +661,11 @@ function pod-not-terminating {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert restarts of pods less than specified value
+#   # To assert restarts of pods less than specified value.
 #   kubectl assert restarts pods -n default -lt 10
-#   # Assert restarts of pods with specified label in specified namespace no more than specified value
+#   # To assert restarts of pods with specified label in specified namespace no more than specified value.
 #   kubectl assert restarts pods -l 'app=echo' -n default -le 10
-#   # Assert restarts of pods no more than specified value in any namespace
+#   # To assert restarts of pods no more than specified value in any namespace.
 #   kubectl assert restarts pods --all-namespaces -lt 10
 ##
 function pod-restarts {
@@ -724,9 +724,9 @@ function pod-restarts {
 #   ${SELECT_OPTIONS}
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert pods ready in specified namespace
+#   # To assert pods ready in specified namespace.
 #   kubectl assert pod-ready pods -n default
-#   # Assert pods ready in all namespaces
+#   # To assert pods ready in all namespaces.
 #   kubectl assert pod-ready pods --all-namespaces
 ##
 function pod-ready {
@@ -774,7 +774,7 @@ function pod-ready {
 # @Options:
 #   ${GLOBAL_OPTIONS}
 # @Examples:
-#   # Assert apiservice available
+#   # To assert apiservice available.
 #   kubectl assert apiservice-available
 ##
 function apiservice-available {
