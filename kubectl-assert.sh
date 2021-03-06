@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VERSION="0.2.0"
+
 CYAN="\033[0;36m"
 GREEN="\033[0;32m"
 NORMAL="\033[0m"
@@ -20,8 +22,9 @@ SELECT_OPTIONS_HELP=(
   "-n, --namespace='': If present, the namespace scope for this CLI request."
 )
 GLOBAL_OPTIONS_HELP=(
-  "-v, --verbose: Enable the verbose log."
   "-h, --help: Print the help information."
+  "-v, --verbose: Enable the verbose log."
+  "-V, --version: Print the version information."
 )
 
 # Load custom assertions
@@ -59,16 +62,19 @@ function logger::pass {
 }
 
 function parse_common_args {
-  ARG_VERBOSE=''
   ARG_HELP=''
+  ARG_VERBOSE=''
+  ARG_VERSION=''
   POSITIONAL=()
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -v|--verbose)
-      ARG_VERBOSE=1; shift ;;
     -h|--help)
       ARG_HELP=1; shift ;;
+    -v|--verbose)
+      ARG_VERBOSE=1; shift ;;
+    --version)
+      ARG_VERSION=1; shift ;;
     *)
       POSITIONAL+=("$1"); shift ;;
     esac
@@ -252,7 +258,7 @@ function parse_resource_rows {
 function list_assertions {
   DEFAULT_ASSERTIONS=(`cat $0 | grep '^#[[:space:]]*@Name:' | sed -n 's/^#[[:space:]]*@Name://p'`)
 
-  echo "Kube Assert asserts the Kubernetes resources."
+  echo "kubectl-assert asserts the Kubernetes resources."
   echo
   echo " Find more information at: https://morningspacce.github.io/kube-assert/docs/"
   echo
@@ -352,7 +358,7 @@ function run_assertion {
       logger::error 'Unknown assertion "'$what'".' && exit 1
     fi
   else
-    list_assertions
+    [[ $ARG_VERSION == 1 ]] && echo "kubectl-assert version $VERSION" || list_assertions
   fi
 }
 
