@@ -15,3 +15,5 @@ Below is a list of all available assertions that are supported by Kube Assert ou
 | [apiservice-available](assertions/apiservice-available.md)| Assert apiservice should be available.
 
 To learn what each assertion is supposed to do and how to use it, please check the details for each assertion by clicking the assertion name in the above table.
+
+Besides the above assertions, Kube Assert also supports custom assertion. You can write your own assertion if the existing assertions do not fulfill your requirement. To learn how to write custom assertion, please read [Writing Custom Assertion](writing-custom-assertion.md).

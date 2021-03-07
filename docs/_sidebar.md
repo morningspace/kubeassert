@@ -10,7 +10,7 @@
   * [pod-not-terminating](assertions/pod-not-terminating.md)
   * [pod-restarts](assertions/pod-restarts.md)
   * [apiservice-available](assertions/apiservice-available.md)
-* [Writing Assertion](writing-assertion.md)
+* [Writing Custom Assertion](writing-custom-assertion.md)
 * [Working with KUTTL](working-with-kuttl.md)
 * [Tips and Tricks](tips-and-tricks.md)
 * [Contributing](contributing.md)

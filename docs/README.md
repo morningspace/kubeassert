@@ -9,7 +9,7 @@ Kube Assert is designed as a kubectl plugin to provide a set of assertions that 
 * To learn more on Kube Assert, please read [What is Kube Assert?](what-is-kube-assert.md).
 * To learn how to install and run Kube Assert, please read [Getting Started](getting-started.md).
 * To learn what assertions that Kube Assert provides out of the box, please read [Assertions](assertions.md).
-* To learn how to write your own assertions and run using Kube Assert, please read [Writing Assertion](writing-assertion.md).
+* To learn how to write your own assertions and run using Kube Assert, please read [Writing Custom Assertion](writing-custom-assertion.md).
 * To learn how to integrate Kube Assert with [KUTTL](https://kuttl.dev/), please read [Working with KUTTL](working-with-kuttl.md).
 * To learn more on how to use Kube Assert effectively, please read [Tips and Tricks](tips-and-tricks.md).
 * To learn how to contribute, please read [Contributing](contributing.md).

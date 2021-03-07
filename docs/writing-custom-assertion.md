@@ -1,4 +1,4 @@
-## Writing Assertion
+## Writing Custom Assertion
 
 The out of box assertions provided by Kube Assert can support most scenarios in your day to day work. However, it is also possible that these assertions can not fullfil your requirement when you have some advanced cases.
 
