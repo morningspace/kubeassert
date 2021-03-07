@@ -1,14 +1,14 @@
 ## Writing Custom Assertion
 
-The out of box assertions provided by Kube Assert can support most scenarios in your day to day work. However, it is also possible that these assertions can not fullfil your requirement when you have some advanced cases.
+The out of box assertions provided by KubeAssert can support most scenarios in your day to day work. However, it is also possible that these assertions can not fullfil your requirement when you have some advanced cases.
 
-Kube Assert supports custom assertion, where you can write your own assertion, then have Kube Assert load and execute it.
+KubeAssert supports custom assertion, where you can write your own assertion, then have KubeAssert load and execute it.
 
 As an example, let's write an assertion to verify if your `kubeconfig` includes a cluster where the cluster name is specified as an argument when run the assertion from the command line.
 
 ### Create a Shell Script File
 
-Let's create a shell script file called `custom-assertions.sh` and put it into `$HOME/.kube-assert` directory. This is where Kube Assert loads the custom assertions. Each time when Kube Assert is started, it will find all `.sh` files in this directory and load them as custom assertions.
+Let's create a shell script file called `custom-assertions.sh` and put it into `$HOME/.kubeassert` directory. This is where KubeAssert loads the custom assertions. Each time when KubeAssert is started, it will find all `.sh` files in this directory and load them as custom assertions.
 
 The file can include multiple assertions. Each assertion is implemented as a shell function. In our case, we only have one assertion, which is the function `cluster` and right now the function body is empty:
 ```shell
@@ -48,7 +48,7 @@ function cluster {
   # Run some kubectl commands
   kubectl config get-clusters
   # Validate results
-  if cat $HOME/.kube-assert/result.txt | grep -q ^$1$; then
+  if cat $HOME/.kubeassert/result.txt | grep -q ^$1$; then
     # Print normal logs
     logger::info "Found $1 in kubeconfig."
   else
@@ -58,7 +58,7 @@ function cluster {
 }
 ```
 
-You may notice that to validate the results, we actually look for a file called `result.txt` in `$HOME/.kube-assert/` directory. Our outputs returned by `kubectl` are all dumped into this file.
+You may notice that to validate the results, we actually look for a file called `result.txt` in `$HOME/.kubeassert/` directory. Our outputs returned by `kubectl` are all dumped into this file.
 
 Now let's try the assertion without specifying a cluser name. It will show an error message to indicate the input argument is missing.
 ```console
@@ -95,7 +95,7 @@ ASSERT PASS
 
 ### Add Comment to the Assertion
 
-So far we have implemented our custom assertion. But there is one more thing left. To make the custom assertion visible in the supported assertion list when you run Kube Assert with `-h/--help` option or without any option, you need to add one special comment ahead of the assertion function. 
+So far we have implemented our custom assertion. But there is one more thing left. To make the custom assertion visible in the supported assertion list when you run KubeAssert with `-h/--help` option or without any option, you need to add one special comment ahead of the assertion function. 
 
 Also, when you run `kubectl assert <assertion>` with `-h/--help` option to print the help information for your assertion, it requires you to prepare the help information beforehand. This is also defined in the comment.
 
@@ -114,7 +114,7 @@ The comment should start with `##` and end with `##`, inside which there are a f
 ##
 ```
 
-For `Options` field, there are a few pre-defined variables which can be used. If your assertion supports some pre-defined options, you can simply put the corresponding variables in `Options` field as placeholders. They will be expanded to the actual contents when Kube Assert prints the help information.
+For `Options` field, there are a few pre-defined variables which can be used. If your assertion supports some pre-defined options, you can simply put the corresponding variables in `Options` field as placeholders. They will be expanded to the actual contents when KubeAssert prints the help information.
 * `${GLOBAL_OPTIONS}`: This variable represents the global options that should be applied to all assertions, e.g. `-h/--help` to print the help information.
 * `${SELECT_OPTIONS}`: This variable represents the options used to filter on resources in cluster, e.g. `-l/--selector` to filter by labels, `-n/--namespace` to limit to a specific namespace.
 * `${OP_VAL_OPTIONS}`: This variable represents the comparison operators, e.g. `-eq`, `-lt`, `-gt`, `-ge`, `-le`.
@@ -184,7 +184,7 @@ function cluster {
   # Run some kubectl commands
   kubectl config get-clusters
   # Validate results
-  if cat $HOME/.kube-assert/result.txt | grep -q ^$1$; then
+  if cat $HOME/.kubeassert/result.txt | grep -q ^$1$; then
     # Print normal logs
     logger::info "Found $1 in kubeconfig."
   else

@@ -9,7 +9,7 @@ RED="\033[0;31m"
 
 IS_FAILED=0
 
-WORKDIR=~/.kube-assert
+WORKDIR=~/.kubeassert
 mkdir -p $WORKDIR
 
 OP_VAL_OPTIONS_HELP=(
@@ -258,9 +258,9 @@ function parse_resource_rows {
 function list_assertions {
   DEFAULT_ASSERTIONS=(`cat $0 | grep '^#[[:space:]]*@Name:' | sed -n 's/^#[[:space:]]*@Name://p'`)
 
-  echo "Kube Assert - the kubectl plugin to assert Kubernetes resources."
+  echo "KubeAssert - the kubectl plugin to assert Kubernetes resources."
   echo
-  echo " Find more information at: https://morningspacce.github.io/kube-assert/docs/"
+  echo " Find more information at: https://morningspacce.github.io/kubeassert/docs/"
   echo
 
   echo "Supported assertions:"

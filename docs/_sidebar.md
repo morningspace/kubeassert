@@ -1,4 +1,4 @@
-* [What is Kube Assert](what-is-kube-assert.md)
+* [What is KubeAssert](what-is-kubeassert.md)
 * [Getting Started](getting-started.md)
 * [Assersions](assertions.md)
   * [exist](assertions/exist.md)
