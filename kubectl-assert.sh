@@ -614,9 +614,9 @@ function num {
 #   ${GLOBAL_OPTIONS}
 # @Examples:
 #   # To assert pods ready in specified namespace.
-#   kubectl assert pod-ready pods -n default
+#   kubectl assert pod-ready -n default
 #   # To assert pods ready in all namespaces.
-#   kubectl assert pod-ready pods --all-namespaces
+#   kubectl assert pod-ready --all-namespaces
 ##
 function pod-ready {
   parse_select_args $@
@@ -713,11 +713,11 @@ function pod-not-terminating {
 #   ${GLOBAL_OPTIONS}
 # @Examples:
 #   # To assert restarts of pods less than specified value.
-#   kubectl assert restarts pods -n default -lt 10
+#   kubectl assert pod-restarts -n default -lt 10
 #   # To assert restarts of pods with specified label in specified namespace no more than specified value.
-#   kubectl assert restarts pods -l 'app=echo' -n default -le 10
+#   kubectl assert pod-restarts -l 'app=echo' -n default -le 10
 #   # To assert restarts of pods no more than specified value in any namespace.
-#   kubectl assert restarts pods --all-namespaces -lt 10
+#   kubectl assert pod-restarts --all-namespaces -lt 10
 ##
 function pod-restarts {
   parse_select_args $@
