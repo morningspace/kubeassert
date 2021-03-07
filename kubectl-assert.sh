@@ -606,6 +606,57 @@ function num {
 }
 
 ##
+# @Name: pod-ready
+# @Description: Assert pod should be ready.
+# @Usage: kubectl assert pod-ready [options]
+# @Options:
+#   ${SELECT_OPTIONS}
+#   ${GLOBAL_OPTIONS}
+# @Examples:
+#   # To assert pods ready in specified namespace.
+#   kubectl assert pod-ready pods -n default
+#   # To assert pods ready in all namespaces.
+#   kubectl assert pod-ready pods --all-namespaces
+##
+function pod-ready {
+  parse_select_args $@
+
+  POSITIONAL=(pod ${POSITIONAL[@]})
+  set -- ${POSITIONAL[@]}
+  parse_resource_args $@
+
+  logger::assert "$RESOURCE_FULLNAME should be ready."
+
+  if kubectl get $RESOURCE ${ARG_LABEL_SELECTORS[@]} ${ARG_FIELD_SELECTORS[@]} $ARG_NAMESPACE; then
+    local line
+    local line_num=0
+    local lines=()
+
+    while IFS= read -r line; do
+      (( line_num++ ))
+      (( line_num == 1 )) && lines+=("$line") && continue
+
+      parse_resource_row $line
+
+      if (( $ROW_READY_CONTAINERS == $ROW_TOTAL_CONTAINERS )); then
+        [[ $ROW_STATUS != Completed && $ROW_STATUS != Running ]] && lines+=("$line")
+      else
+        [[ $ROW_STATUS != Completed ]] && lines+=("$line")
+      fi
+    done < $WORKDIR/result.txt
+
+    if [ ${#lines[@]} -gt 1 ]; then
+      logger::fail "Found $(( ${#lines[@]} - 1 )) resource(s) not ready."
+      for line in "${lines[@]}"; do
+        echo "$line"
+      done
+    fi
+  else
+    logger::fail "Error getting resource(s)."
+  fi
+}
+
+##
 # @Name: pod-not-terminating
 # @Description: Assert pod should not keep terminating.
 # @Usage: kubectl assert pod-not-terminating [options]
@@ -654,7 +705,7 @@ function pod-not-terminating {
 
 ##
 # @Name: pod-restarts
-# @Description: Assert pod restarts should not match specified criteria.
+# @Description: Assert pod restarts should match specified criteria.
 # @Usage: kubectl assert pod-restarts [options] (-eq|-lt|-gt|-ge|-le VALUE)
 # @Options:
 #   ${OP_VAL_OPTIONS}
@@ -707,57 +758,6 @@ function pod-restarts {
 
     if [ ${#lines[@]} -gt 1 ]; then
       logger::fail "Found $(( ${#lines[@]} - 1 )) resource(s) restarts not $OPERATOR $EXPECTED_VAL."
-      for line in "${lines[@]}"; do
-        echo "$line"
-      done
-    fi
-  else
-    logger::fail "Error getting resource(s)."
-  fi
-}
-
-##
-# @Name: pod-ready
-# @Description: Assert pod should be ready.
-# @Usage: kubectl assert pod-ready [options]
-# @Options:
-#   ${SELECT_OPTIONS}
-#   ${GLOBAL_OPTIONS}
-# @Examples:
-#   # To assert pods ready in specified namespace.
-#   kubectl assert pod-ready pods -n default
-#   # To assert pods ready in all namespaces.
-#   kubectl assert pod-ready pods --all-namespaces
-##
-function pod-ready {
-  parse_select_args $@
-
-  POSITIONAL=(pod ${POSITIONAL[@]})
-  set -- ${POSITIONAL[@]}
-  parse_resource_args $@
-
-  logger::assert "$RESOURCE_FULLNAME should be ready."
-
-  if kubectl get $RESOURCE ${ARG_LABEL_SELECTORS[@]} ${ARG_FIELD_SELECTORS[@]} $ARG_NAMESPACE; then
-    local line
-    local line_num=0
-    local lines=()
-
-    while IFS= read -r line; do
-      (( line_num++ ))
-      (( line_num == 1 )) && lines+=("$line") && continue
-
-      parse_resource_row $line
-
-      if (( $ROW_READY_CONTAINERS == $ROW_TOTAL_CONTAINERS )); then
-        [[ $ROW_STATUS != Completed && $ROW_STATUS != Running ]] && lines+=("$line")
-      else
-        [[ $ROW_STATUS != Completed ]] && lines+=("$line")
-      fi
-    done < $WORKDIR/result.txt
-
-    if [ ${#lines[@]} -gt 1 ]; then
-      logger::fail "Found $(( ${#lines[@]} - 1 )) resource(s) not ready."
       for line in "${lines[@]}"; do
         echo "$line"
       done
