@@ -260,7 +260,7 @@ function list_assertions {
 
   echo "KubeAssert - the kubectl plugin to assert Kubernetes resources."
   echo
-  echo " Find more information at: https://morningspacce.github.io/kubeassert/docs/"
+  echo " Find more information at: https://morningspace.github.io/kubeassert/docs/"
   echo
 
   echo "Supported assertions:"
