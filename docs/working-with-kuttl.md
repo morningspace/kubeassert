@@ -91,11 +91,11 @@ commands:
 - command: kubectl assert exist-enhanced deployment example-deployment -n $NAMESPACE --field-selector status.readyReplicas=4
 ```
 
-It is almost the same content as above but just the expected value of `status.readyReplicas` is changed to 4.
+It is almost the same content as above, just the expected value of `status.readyReplicas` is changed to 4.
  
 Run the test suite and validate if the test can pass:
 ```console
 kubectl kuttl test --start-kind=true ./tests/e2e/
 ```
 
-For more instructions on this sample test, please refer to the original [document](https://kuttl.dev/docs/kuttl-test-harness.html#writing-your-first-test) on KUTTL website. As you can see, to integrate KUTTL with KubeAssert is quite straightforward. The above test only demonstrated some basic capabilities of KubeAssert. Certainly you can define more complicated assertions using KubeAssert when you run KUTTL tests.
+For more instructions on this sample test, please refer to the original [document](https://kuttl.dev/docs/kuttl-test-harness.html#writing-your-first-test) on KUTTL website. As you can see, to integrate KUTTL with KubeAssert is quite straightforward. The above test only demonstrates some basic capabilities of KubeAssert. Certainly you can define more advanced assertions using KubeAssert when you run KUTTL tests.
