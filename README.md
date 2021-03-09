@@ -5,5 +5,3 @@
 [![Releases](https://img.shields.io/github/v/release/morningspace/kubeassert.svg)](https://github.com/morningspace/kubeassert/releases)
 
 KubeAssert is designed as a kubectl plugin to provide a set of assertions that can be used to quickly assert Kubernetes resources from the command line against your working cluster. To learn more on KubeAssert, please read the online [documentation](https://morningspace.github.io/kubeassert/docs/#/).
-
-![](docs/assets/kubeassert.png)
