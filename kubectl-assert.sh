@@ -95,7 +95,7 @@ function parse_common_args {
       ARG_HELP=1; shift ;;
     -v|--verbose)
       ARG_VERBOSE=1; shift ;;
-    --version)
+    -V|--version)
       ARG_VERSION=1; shift ;;
     *)
       POSITIONAL+=("$1"); shift ;;
