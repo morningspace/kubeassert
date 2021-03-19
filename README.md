@@ -8,4 +8,4 @@ KubeAssert is designed as a kubectl plugin to provide a set of assertions that c
 
 To learn more on KubeAssert, please read the online [documentation](https://morningspace.github.io/kubeassert/docs/#/).
 
-![](assets/demo.gif)
+![](docs/assets/demo.gif)
