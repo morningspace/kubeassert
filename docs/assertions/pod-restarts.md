@@ -1,12 +1,12 @@
-## pod-restarts
+## Assert: pod-restarts
 
 Assert pod restarts should not match specified criteria.
 
-## Usage
+### Usage
 
 kubectl assert pod-restarts [options] (-eq|-lt|-gt|-ge|-le VALUE)
 
-## Options
+### Options
 
 | Option                  | Description
 |:------------------------|:-----------
@@ -19,7 +19,7 @@ kubectl assert pod-restarts [options] (-eq|-lt|-gt|-ge|-le VALUE)
 | -v, --verbose           | Enable the verbose log.
 | -V, --version           | Print the version information.
 
-## Examples
+### Examples
 
 To assert restarts of pods less than specified value.
 ```shell

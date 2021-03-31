@@ -1,12 +1,12 @@
-## num
+## Assert: num
 
 Assert the number of resource should match specified criteria.
 
-## Usage
+### Usage
 
 kubectl assert num (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options] (-eq|-lt|-gt|-ge|-le VALUE)
 
-## Options
+### Options
 
 | Option                  | Description
 |:------------------------|:-----------
@@ -19,7 +19,7 @@ kubectl assert num (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.G
 | -v, --verbose           | Enable the verbose log.
 | -V, --version           | Print the version information.
 
-## Examples
+### Examples
 
 To assert number of pods in specified namespace equal to specified value.
 ```shell

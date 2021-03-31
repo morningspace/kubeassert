@@ -20,7 +20,7 @@ function cluster {
 ```
 
 To test the assertion, run `kubectl assert` and specify the funtion name `cluster` as the assertion name:
-```console
+```shell
 kubectl assert cluster
 ASSERT PASS
 ```
@@ -61,20 +61,20 @@ function cluster {
 You may notice that to validate the results, we actually look for a file called `result.txt` in `$HOME/.kubeassert/` directory. Our outputs returned by `kubectl` are all dumped into this file.
 
 Now let's try the assertion without specifying a cluser name. It will show an error message to indicate the input argument is missing.
-```console
+```shell
 kubectl assert cluster
 ERROR  You must specify a cluster name.
 ```
 
 Specify a cluster name that does not exist. It will fail the assertion with the reason printed to the console.
-```console
+```shell
 kubectl assert cluster kind
 ASSERT Cluster with name kind should be included in kubeconfig.
 ASSERT FAIL kind not found.
 ```
 
 Specify a cluster name that does exist. This will pass the assertion.
-```console
+```shell
 kubectl assert cluster kind-foo
 ASSERT Cluster with name kind-foo should be included in kubeconfig.
 INFO   Found kind-foo in kubeconfig.
@@ -82,7 +82,7 @@ ASSERT PASS
 ```
 
 If something goes wrong when you run the assertion, you may want to see what `kubectl` commands the assertion run and what the actual results they return for troubleshooting purpose, just enable the verbose logs using `-v` when you run the assertion.
-```console
+```shell
 kubectl assert cluster kind-foo -v
 ASSERT Cluster with name kind-foo should be included in kubeconfig.
 INFO   kubectl config get-clusters
@@ -139,17 +139,17 @@ function cluster {
 ```
 
 To validate it, run below command to see if our assertion is included in the supported assertion list:
-```console
+```shell
 kubectl assert --help
 ```
 
 If all goes as expected, you will see `cluster` appeared in the list. Run below command to print the help information for our assertion:
-```console
+```shell
 kubectl assert cluster --help
 ```
 
 You will see below output which is exactly what we define in the comment as above:
-```console
+```shell
 Assert cluster with specified name included in kubeconfig file
 
 Usage: kubectl assert cluster (NAME) [options]

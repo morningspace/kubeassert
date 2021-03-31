@@ -1,12 +1,12 @@
-## not-exist
+## Assert: not-exist
 
 Assert resource should not exist.
 
-## Usage
+### Usage
 
 kubectl assert not-exist (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
 
-## Options
+### Options
 
 | Option                  | Description
 |:------------------------|:-----------
@@ -18,7 +18,7 @@ kubectl assert not-exist (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSI
 | -v, --verbose           | Enable the verbose log.
 | -V, --version           | Print the version information.
 
-## Examples
+### Examples
 
 To assert resources not exist in current namespace.
 ```shell

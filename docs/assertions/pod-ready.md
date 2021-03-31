@@ -1,12 +1,12 @@
-## pod-ready
+## Assert: pod-ready
 
 Assert pod should be ready.
 
-## Usage
+### Usage
 
 kubectl assert pod-ready [options]
 
-## Options
+### Options
 
 | Option                  | Description
 |:------------------------|:-----------
@@ -18,7 +18,7 @@ kubectl assert pod-ready [options]
 | -v, --verbose           | Enable the verbose log.
 | -V, --version           | Print the version information.
 
-## Examples
+### Examples
 
 To assert pods ready in specified namespace.
 ```shell

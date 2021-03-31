@@ -1,7 +1,5 @@
 ## About Me
 
----
-
 ![](https://morningspace.github.io/assets/images/bio-photo.png)
 
 > Life is Coding and Writing!

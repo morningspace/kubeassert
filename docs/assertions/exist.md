@@ -1,12 +1,12 @@
-## exist
+## Assert: exist
 
 Assert resource should exist.
 
-## Usage
+### Usage
 
 kubectl assert exist (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [options]
 
-## Options
+### Options
 
 | Option                  | Description
 |:------------------------|:-----------
@@ -18,7 +18,7 @@ kubectl assert exist (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][
 | -v, --verbose           | Enable the verbose log.
 | -V, --version           | Print the version information.
 
-## Examples
+### Examples
 
 To assert resources exist in current namespace.
 ```shell

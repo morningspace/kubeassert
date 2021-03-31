@@ -1,12 +1,12 @@
-## apiservice-available
+## Assert: apiservice-available
 
 Assert apiservice should be available.
 
-## Usage
+### Usage
 
 kubectl assert apiservice-available [options]
 
-## Options
+### Options
 
 | Option                  | Description
 |:------------------------|:-----------
@@ -14,7 +14,7 @@ kubectl assert apiservice-available [options]
 | -v, --verbose           | Enable the verbose log.
 | -V, --version           | Print the version information.
 
-## Examples
+### Examples
 
 To assert apiservice available.
 ```shell

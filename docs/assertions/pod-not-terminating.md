@@ -1,12 +1,12 @@
-## pod-not-terminating
+## Assert: pod-not-terminating
 
 Assert pod should not keep terminating.
 
-## Usage
+### Usage
 
 kubectl assert pod-not-terminating [options]
 
-## Options
+### Options
 
 | Option                  | Description
 |:------------------------|:-----------
@@ -18,7 +18,7 @@ kubectl assert pod-not-terminating [options]
 | -v, --verbose           | Enable the verbose log.
 | -V, --version           | Print the version information.
 
-## Examples
+### Examples
 
 To assert no pod terminating in specified namespace.
 ```shell

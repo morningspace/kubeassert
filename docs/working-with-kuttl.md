@@ -31,7 +31,7 @@ Let's revisit the "[Writing Your First Test](https://kuttl.dev/docs/kuttl-test-h
 #### Create a Test Case
 
 First, let's create the directory `tests/e2e` for our test suite and the sub-directory `example-test` for the test case:
-```console
+```shell
 mkdir -p tests/e2e/example-test
 ```
 
@@ -94,7 +94,7 @@ commands:
 It is almost the same content as above, just the expected value of `status.readyReplicas` is changed to 4.
  
 Run the test suite and validate if the test can pass:
-```console
+```shell
 kubectl kuttl test --start-kind=true ./tests/e2e/
 ```
 

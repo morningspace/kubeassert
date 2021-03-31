@@ -24,7 +24,7 @@ kubectl assert exist pods -l app=echo,component=proxy \
 ### Using Enhanced Field Selector
 
 When assert the existence of Kubernetes resource using `exist` or `not-exist` assertion, although it allows you to filter on query results by specifying field selector, the support of field selector is very limited. This is because both `exist` and `not-exist` use `kubectl get` to query the resource underneath and directly use the native `--field-selector` option provided by `kubectl`. But according to Kubernetes documentation, filtering by fields actually happens on server side, and the server only supports a limited number of field queries per type. For example, when assert pods, we can query by some fields under `status` using field selector. But this will not work for deployments:
-```
+```shell
 kubectl assert exist deployments -l app=echo --field-selector status.replicas=1
 ASSERT deployments matching label criteria 'app=echo' and field criteria 'status.replicas=1' should exist.
 Error from server (BadRequest): Unable to find "extensions/v1beta1, Resource=deployments" that match label selector "app=echo", field selector "status.replicas=1": "status.replicas" is not a known field selector: only "metadata.name", "metadata.namespace"
@@ -32,7 +32,7 @@ ASSERT FAIL Error getting resource(s).
 ```
 
 Because of this, there are two additional assertions, `exist-enhanced` and `not-exist-enhanced`, which provide the same functionality but with enhanced field selector support. So, the above assertion can be modified as below:
-```
+```shell
 kubectl assert exist-enhanced deployments -l app=echo --field-selector status.replicas=1
 ASSERT deployments matching label criteria 'app=echo' and field criteria 'status.replicas=1' should exist.
 INFO   Found 1 resource(s).
