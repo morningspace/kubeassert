@@ -45,12 +45,12 @@ The native field selector supports operator `=`, `==`, and `!=` (`=` and `==` me
 
 To assert service accounts in `default` namespace should include a specified secret:
 ```shell
-kubectl assert exist-enhanced serviceaccounts --field-selector secrets[*].name=~my-secret -n default
+kubectl assert exist-enhanced serviceaccounts --field-selector 'secrets[*].name=~my-secret' -n default
 ```
 
 To assert a custom resource at least has one `condition` element under `status` where the value of `type` field should be `Deployed`:
 ```shell
-kubectl assert exist-enhanced MyResources --field-selector status.conditions[*].type=~Deployed
+kubectl assert exist-enhanced MyResources --field-selector 'status.conditions[*].type=~Deployed'
 ```
 
 To assert a custom resource where all instances names for this type of resource should start with text that falls into a specified list:
