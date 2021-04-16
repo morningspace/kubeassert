@@ -94,7 +94,7 @@ As an example, to assert a custom resource where there is no instance that keeps
 kubectl assert not-exist-enhanced MyResources --field-selector metadata.deletionTimestamp!='<none>',status.phase==Running --all-namespaces
 ```
 
-As another example, to assert there is no namespace that keeps terminating in the cluster, we can check both `deletetionTimestamp` and `finalizers`. If a namespace has both, it is very likely that this namespace is keeping terminating, because Kubernetes will not delete the namespace so long as there is any finalizer attached.
+As another example, to assert there is no namespace that keeps terminating in the cluster, we can check both `deletionTimestamp` and `finalizers`. If a namespace has both, it is very likely that this namespace is keeping terminating, because Kubernetes will not delete the namespace so long as there is any finalizer attached.
 ```shell
-kubectl assert not-exist-enhanced namespace --field-selector metadata.deletetionTimestamp!='<none>',spec.finalizers[*]!='<none>'
+kubectl assert not-exist-enhanced namespace --field-selector metadata.deletionTimestamp!='<none>',spec.finalizers[*]!='<none>'
 ```
