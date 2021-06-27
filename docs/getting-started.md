@@ -39,7 +39,7 @@ This will give you exactly the same output as above when you run the script in s
 KubeAssert has been submitted to [krew](https://krew.sigs.k8s.io/) as a kubectl plugin distributed on the centralized [krew-index](https://krew.sigs.k8s.io/plugins/), so you can install KubeAssert using krew as well:
 
 ```shell
-krew install assert
+kubectl krew install assert
 ```
 
 To learn what assertions that KubeAssert supports out of the box, please read [Assertions](assertions.md).
